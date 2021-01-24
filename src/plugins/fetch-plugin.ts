@@ -5,9 +5,8 @@ import * as localforage from 'localforage';
 const fileCache = localforage.createInstance({
   name: 'filecache',
 });
-const debug = true;
 
-export const fetchPlugin = (input: string) => ({
+export const fetchPlugin = (input: string, debug = false) => ({
   name: 'fetch-plugin',
   setup: (build: esbuild.PluginBuild) => {
     // срабатывает сразу после резолва пути импорта,
