@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { useEffect, useState, useRef } from 'react';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 import { fetchPlugin } from './plugins/fetch-plugin';
+import CodeEditor from './components/CodeEditor';
 
 const App = () => {
   const ref = useRef<esbuild.Service>();
@@ -68,6 +69,14 @@ const App = () => {
 
   return (
     <div>
+      <CodeEditor
+        initialValue="const App = () => {
+  return (
+    <button onClick={() => console.log(1)}>Click me </button>
+  );
+}"
+        onChange={(value: string) => console.log(value)}
+      />
       <textarea
         value={input}
         onChange={e => setInput(e.target.value)}
