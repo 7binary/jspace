@@ -4,12 +4,12 @@ import { fetchPlugin } from './plugins/fetch-plugin';
 
 let service: esbuild.Service;
 
-interface BundleResut {
+export interface BundledResut {
   transformed: string;
   builded: string;
 }
 
-const bundle = async (rawCode: string): Promise<BundleResut> => {
+const bundle = async (rawCode: string): Promise<BundledResut> => {
   if (!service) {
     service = await esbuild.startService({
       worker: true,

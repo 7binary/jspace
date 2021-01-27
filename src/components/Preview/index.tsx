@@ -1,18 +1,14 @@
 import { useEffect, useRef } from 'react';
 import './preview.css';
+import { BundledResut } from '../../bundler';
 
-interface Props {
-  code: string;
-  transpiled: string;
-}
-
-const Preview: React.FC<Props> = ({ code, transpiled }) => {
+const Preview: React.FC<{bundled: BundledResut}> = ({ bundled }) => {
   const iframe = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     // iframe.current!.srcdoc = html;
-    iframe.current?.contentWindow?.postMessage(code + '@*@' + transpiled, '*');
-  }, [code, transpiled]);
+    iframe.current?.contentWindow?.postMessage(bundled.builded + '@*@' + bundled.transformed, '*');
+  }, [bundled]);
 
   return (
     <div className="preview-wrapper">
@@ -35,11 +31,13 @@ const html = `
   }
   html, body, pre {
     margin: 0;
+    font-family: "Source Sans Pro", Arial, sans-serif;
+    font-size: 15px;
   }
   pre {
     background-color: beige;
     padding: 4px 8px;
-    font-size: 12px;
+    font-size: 13px;
     white-space: pre-wrap;       /* css-3 */
     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
     white-space: -pre-wrap;      /* Opera 4-6 */
@@ -47,33 +45,45 @@ const html = `
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
   }
   .err {
+    padding: 10px 15px 15px;
     color: red;
+    background-color: beige;
+  }
+  .err h3 {
+    margin-top: 0;
   }
 </style>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    window.addEventListener('message', (event) => {
-      const [code, transpiled] = event.data.split('@*@');
-      console.log(code, transpiled);
-      console.log('=> IFRAME GOT EVENT WITH CODE LENGTH: ', code.length);
-      document.body.innerHTML = '<div id="root"></div>';
-      const root = document.querySelector('#root');
-      
-      try {
-        // безопасно выполняем eval, так как он в своей песочнице <iframe> без доступа на уровень выше
-        eval(code);
-        // если нечего показывать, то отобразим транспиляцию в ES6 код
-        if (root.innerHTML === '' && transpiled.length) {
-          root.innerHTML = '<pre><b>Transpiled to ES2015</b><hr/>$1</pre>'.replace('$1', transpiled);
-        }
-      } catch (err) {
-        const root = document.querySelector('#root');
-        root.innerHTML = '<div class="err"><h3>Runtime error</h3>' + err.toString() + '</div>';
-        // пробрасываем ошибку в консольку для деталки
-        throw err;
+  const handleError = (err) => {
+    const root = document.querySelector('#root');
+    root.innerHTML = '<div class="err"><h3>Runtime error</h3>' + err.toString() + '</div>';
+    console.error(err); // пробрасываем ошибку в консольку для деталки по ошибке
+  }
+
+  window.addEventListener('message', (event) => {
+    const [code, transpiled] = event.data.split('@*@');
+    console.log('=> IFRAME GOT EVENT WITH CODE LENGTH: ', code.length);
+    document.body.innerHTML = '<div id="root"></div>';
+    const root = document.querySelector('#root');
+    
+    // ловим асинхронные ошибки
+    window.addEventListener('error', (event) => {
+      event.preventDefault();
+      handleError(event.error);
+    });
+    
+    try {
+      // безопасно выполняем eval, так как он в своей песочнице <iframe> без доступа на уровень выше
+      eval(code);
+      // если нечего показывать, то отобразим транспиляцию в ES6 код
+      if (root.innerHTML === '' && transpiled.length) {
+        root.innerHTML = '<pre><b>Transpiled to ES2015</b><hr/>$1</pre>'.replace('$1', transpiled);
       }
-    }, false);
-  });
+    } catch (err) {
+      // ловим синхронные ошибки
+      handleError(err);
+    }
+  }, false);
 </script>
 </head>
 <body>

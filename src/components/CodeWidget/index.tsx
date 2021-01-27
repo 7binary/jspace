@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import CodeEditor from '../../components/CodeEditor';
 import Preview from '../../components/Preview';
-import bundle from '../../bundler';
+import bundle, { BundledResut } from '../../bundler';
 import Resizable from '../Resizable';
 
 import './code-widget.css';
@@ -15,15 +15,13 @@ ReactDOM.render(<App/>, document.querySelector('#root'));
 
 const CodeWidget = () => {
   const [input, setInput] = useState(initialCode);
-  const [code, setCode] = useState('');
-  const [transpiled, setTranspiled] = useState('');
+  const [bundled, setBundled] = useState<BundledResut>({ transformed: '', builded: '' });
 
   useEffect(() => {
     // Debouncing - сработает спустя 750мс после окончания ввода кода
     const timer = setTimeout(async () => {
-      const { transformed, builded } = await bundle(input);
-      setTranspiled(transformed);
-      setCode(builded);
+      const result = await bundle(input);
+      setBundled(result);
     }, 750);
 
     return () => clearTimeout(timer);
@@ -38,7 +36,7 @@ const CodeWidget = () => {
             onChange={(editorCode: string) => setInput(editorCode)}
           />
         </Resizable>
-        <Preview code={code} transpiled={transpiled}/>
+        <Preview bundled={bundled}/>
       </div>
     </Resizable>
   );
