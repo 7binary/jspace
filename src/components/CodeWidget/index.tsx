@@ -15,7 +15,7 @@ ReactDOM.render(<App/>, document.querySelector('#root'));
 
 const CodeWidget = () => {
   const [input, setInput] = useState(initialCode);
-  const [bundled, setBundled] = useState<BundledResut>({ transformed: '', builded: '' });
+  const [bundled, setBundled] = useState<BundledResut>({ transpiled: '', code: '', error: null });
 
   useEffect(() => {
     // Debouncing - сработает спустя 750мс после окончания ввода кода

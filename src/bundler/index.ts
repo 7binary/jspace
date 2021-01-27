@@ -5,8 +5,9 @@ import { fetchPlugin } from './plugins/fetch-plugin';
 let service: esbuild.Service;
 
 export interface BundledResut {
-  transformed: string;
-  builded: string;
+  transpiled: string;
+  code: string;
+  error: string | null;
 }
 
 const bundle = async (rawCode: string): Promise<BundledResut> => {
@@ -17,25 +18,30 @@ const bundle = async (rawCode: string): Promise<BundledResut> => {
     });
   }
 
-  const transpiled = await service.transform(rawCode, {
-    loader: 'jsx',
-    target: 'es2015',
-  });
-  const builded = await service.build({
-    entryPoints: ['index.js'],
-    bundle: true,
-    write: false,
-    plugins: [unpkgPathPlugin(), fetchPlugin(rawCode, true)],
-    define: {
-      'process.env.NODE_ENV': '"production"',
-      global: 'window',
-    },
-  });
+  const result: BundledResut = { transpiled: '', code: '', error: null };
 
-  return {
-    transformed: transpiled.code,
-    builded: builded.outputFiles[0].text,
-  };
+  try {
+    const transformed = await service.transform(rawCode, {
+      loader: 'jsx',
+      target: 'es2015',
+    });
+    const builded = await service.build({
+      entryPoints: ['index.js'],
+      bundle: true,
+      write: false,
+      plugins: [unpkgPathPlugin(), fetchPlugin(rawCode, true)],
+      define: {
+        'process.env.NODE_ENV': '"production"',
+        global: 'window',
+      },
+    });
+    result.transpiled = transformed.code;
+    result.code = builded.outputFiles[0].text;
+  } catch (err) {
+    result.error = err.toString();
+  }
+
+  return result;
 };
 
 export default bundle;

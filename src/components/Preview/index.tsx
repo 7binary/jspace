@@ -7,7 +7,8 @@ const Preview: React.FC<{bundled: BundledResut}> = ({ bundled }) => {
 
   useEffect(() => {
     // iframe.current!.srcdoc = html;
-    iframe.current?.contentWindow?.postMessage(bundled.builded + '@*@' + bundled.transformed, '*');
+    const { code, transpiled, error } = bundled;
+    iframe.current?.contentWindow?.postMessage([code, transpiled, error].join('@*@'), '*');
   }, [bundled]);
 
   return (
@@ -40,13 +41,12 @@ const html = `
     font-size: 13px;
     white-space: pre-wrap;       /* css-3 */
     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
   }
   .err {
     padding: 10px 15px 15px;
-    color: red;
+    color: maroon;
     background-color: beige;
   }
   .err h3 {
@@ -61,8 +61,13 @@ const html = `
   }
 
   window.addEventListener('message', (event) => {
-    const [code, transpiled] = event.data.split('@*@');
+    const [code, transpiled, error] = event.data.split('@*@');
     console.log('=> IFRAME GOT EVENT WITH CODE LENGTH: ', code.length);
+    
+    if (error && error.length > 0) {
+       return handleError(error);
+    }
+
     document.body.innerHTML = '<div id="root"></div>';
     const root = document.querySelector('#root');
     
