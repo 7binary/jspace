@@ -39,18 +39,18 @@ const Index: React.FC<Props> = ({ initialValue, onChange }) => {
   };
 
   return (
-    <div className="editor">
+    <div className="editor-wrapper">
       <button
         className="button button-format is-primary is-small"
         onClick={formatCode}
-      >Format</button>
+      >Format @ Prettier</button>
 
       <MonacoEditor
         onMount={handleEditorDidMount}
         value={initialValue}
         language="javascript"
         theme="vs-dark"
-        height="500px"
+        height="100%"
         options={{
           wordWrap: 'on',
           minimap: { enabled: false },
