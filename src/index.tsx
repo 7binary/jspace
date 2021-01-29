@@ -1,11 +1,11 @@
 import 'bulmaswatch/superhero/bulmaswatch.min.css';
 import ReactDOM from 'react-dom';
-import CodeWidget from './components/CodeWidget';
+import TextEditor from './components/TextEditor';
 
 const App = () => {
   return (
     <div>
-      <CodeWidget/>
+      <TextEditor/>
     </div>
   );
 };
