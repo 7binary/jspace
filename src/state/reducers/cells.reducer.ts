@@ -20,7 +20,7 @@ const initialState: CellsState = {
   data: {},
 };
 
-const cellsReducer = produce((state: CellsState = initialState, action: Action) => {
+const cellsReducer = produce((state: CellsState, action: Action) => {
   switch (action.type) {
     case ActionType.UPDATE_CELL:
       const { id, content } = action.payload;
@@ -32,9 +32,9 @@ const cellsReducer = produce((state: CellsState = initialState, action: Action) 
       state.order = state.order.filter(id => id !== action.payload);
       return state;
 
-    case ActionType.INSERT_CELL_BEFORE:
+    case ActionType.INSERT_CELL_AFTER:
       const cell: Cell = {
-        content: '',
+        content: action.payload.content || '',
         type: action.payload.type,
         id: randomId(),
       };
@@ -42,9 +42,9 @@ const cellsReducer = produce((state: CellsState = initialState, action: Action) 
       const foundIndex = state.order.findIndex(id => id === action.payload.id);
 
       if (foundIndex < 0) {
-        state.order.push(cell.id);
+        state.order.unshift(cell.id);
       } else {
-        state.order.splice(foundIndex, 0, cell.id);
+        state.order.splice(foundIndex + 1, 0, cell.id);
       }
       return state;
 
@@ -57,14 +57,15 @@ const cellsReducer = produce((state: CellsState = initialState, action: Action) 
         return state;
       }
 
+      const swap = state.order[targetIndex];
       state.order[targetIndex] = state.order[index];
-      state.order[index] = action.payload.id;
+      state.order[index] = swap;
       return state;
 
     default:
       return state;
   }
-});
+}, initialState);
 
 const randomId = () => Math.random().toString(36).substr(2, 5);
 
