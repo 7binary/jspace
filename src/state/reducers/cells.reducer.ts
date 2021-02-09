@@ -22,6 +22,7 @@ const initialState: CellsState = {
 
 const cellsReducer = produce((state: CellsState, action: Action) => {
   switch (action.type) {
+
     case ActionType.UPDATE_CELL:
       const { id, content } = action.payload;
       state.data[id].content = content;

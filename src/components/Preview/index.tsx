@@ -2,13 +2,19 @@ import { useEffect, useRef } from 'react';
 import './preview.css';
 import { BundledResut } from '../../bundler';
 
-const Preview: React.FC<{bundled: BundledResut}> = ({ bundled }) => {
+interface Props {
+  bundled?: BundledResut;
+  loading?: boolean;
+}
+
+const Preview: React.FC<Props> = ({ bundled, loading }) => {
   const iframe = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
-    // iframe.current!.srcdoc = html;
-    const { code, transpiled, error } = bundled;
-    iframe.current?.contentWindow?.postMessage([code, transpiled, error].join('@*@'), '*');
+    if (bundled) {
+      const { code, transpiled, error } = bundled;
+      iframe.current?.contentWindow?.postMessage([code, transpiled, error].join('@*@'), '*');
+    }
   }, [bundled]);
 
   return (
@@ -19,6 +25,11 @@ const Preview: React.FC<{bundled: BundledResut}> = ({ bundled }) => {
         srcDoc={html}
         sandbox="allow-scripts"
       />
+      {loading ? (
+        <div className="progress-cover">
+          <progress className="progress is-small is-primary" max="100">Loading</progress>
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -62,7 +73,7 @@ const html = `
 
   window.addEventListener('message', (event) => {
     const [code, transpiled, error] = event.data.split('@*@');
-    console.log('=> IFRAME GOT EVENT WITH CODE LENGTH: ', code.length);
+    // console.log('=> <iframe> for event with code length', code.length);
     
     if (error && error.length > 0) {
        return handleError(error);
@@ -92,6 +103,7 @@ const html = `
 </script>
 </head>
 <body>
+  
 </body>
 </html>`;
 

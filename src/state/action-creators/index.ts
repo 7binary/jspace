@@ -1,11 +1,16 @@
 import {
-  DeleteCellAction, Direction,
+  BundleCompleteAction,
+  BundleStartAction,
+  DeleteCellAction,
+  Direction,
   InsertAfterCellAction,
   MoveCellAction,
   UpdateCellAction,
 } from '../actions';
 import { ActionType } from '../action-types';
 import { CellType } from '../cell';
+import { AppDispatch } from '../store';
+import bundle, { BundledResut } from '../../bundler';
 
 export const updateCell = (id: string, content: string): UpdateCellAction => ({
   type: ActionType.UPDATE_CELL,
@@ -27,3 +32,20 @@ export const insertCellAfter =
     type: ActionType.INSERT_CELL_AFTER,
     payload: { id, type, content },
   });
+
+const startBundle = (cellId: string): BundleStartAction => ({
+  type: ActionType.BUNDLE_START,
+  payload: { cellId },
+});
+
+const completeBundle = (cellId: string, bundled: BundledResut): BundleCompleteAction => ({
+  type: ActionType.BUNDLE_COMPLETE,
+  payload: { cellId, bundled },
+});
+
+export const createBundle = (cellId: string, input: string) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(startBundle(cellId));
+    const bundled = await bundle(input);
+    dispatch(completeBundle(cellId, bundled));
+  };

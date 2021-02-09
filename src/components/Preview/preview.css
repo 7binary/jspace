@@ -3,6 +3,7 @@
   position: relative;
   height: 100%;
 }
+
 .react-draggable-transparent-selection .preview-wrapper:after {
   content: '';
   position: absolute;
@@ -12,7 +13,36 @@
   right: 0;
   opacity: 0;
 }
+
 .preview-wrapper iframe {
   height: 100%;
   width: 100%;
 }
+
+.progress-cover {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: white;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  padding-left: 10%;
+  padding-right: 10%;
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+

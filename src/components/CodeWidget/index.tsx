@@ -1,26 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import CodeEditor from '../../components/CodeEditor';
 import Preview from '../../components/Preview';
-import bundle, { BundledResut } from '../../bundler';
 import Resizable from '../Resizable';
 
 import './code-widget.css';
 import { Cell } from '../../state';
 import { useActions } from '../../hooks/use-actions';
+import { useTypedSelector } from '../../hooks/use-typed-selector';
 
 const CodeWidget: React.FC<{cell: Cell}> = ({ cell }) => {
-  const [bundled, setBundled] = useState<BundledResut>({ transpiled: '', code: '', error: null });
-  const { updateCell } = useActions();
+  const bundle = useTypedSelector(state => state.bundles[cell.id]);
+  const { updateCell, createBundle } = useActions();
 
   useEffect(() => {
+    if (!bundle) {
+      createBundle(cell.id, cell.content);
+      return;
+    }
     // Debouncing - сработает спустя 750мс после окончания ввода кода
-    const timer = setTimeout(async () => {
-      const result = await bundle(cell.content);
-      setBundled(result);
+    const timer = setTimeout(() => {
+      createBundle(cell.id, cell.content);
     }, 750);
-
     return () => clearTimeout(timer);
-  }, [cell.content]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cell.id, cell.content, createBundle]);
 
   return (
     <Resizable direction="vertical" vertialHeight={280}>
@@ -31,7 +34,7 @@ const CodeWidget: React.FC<{cell: Cell}> = ({ cell }) => {
             onChange={(value: string) => updateCell(cell.id, value)}
           />
         </Resizable>
-        <Preview bundled={bundled}/>
+        <Preview bundled={bundle?.bundled} loading={bundle?.loading}/>
       </div>
     </Resizable>
   );

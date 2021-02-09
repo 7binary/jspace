@@ -1,5 +1,6 @@
 import { ActionType } from '../action-types';
 import { CellType } from '../cell';
+import { BundledResut } from '../../bundler';
 
 export type Direction = 'up' | 'down';
 
@@ -33,4 +34,20 @@ export interface UpdateCellAction {
   };
 }
 
-export type Action = MoveCellAction | DeleteCellAction | InsertAfterCellAction | UpdateCellAction;
+export interface BundleStartAction {
+  type: ActionType.BUNDLE_START;
+  payload: {
+    cellId: string;
+  }
+}
+
+export interface BundleCompleteAction {
+  type: ActionType.BUNDLE_COMPLETE;
+  payload: {
+    cellId: string;
+    bundled: BundledResut;
+  }
+}
+
+export type Action = MoveCellAction | DeleteCellAction | InsertAfterCellAction | UpdateCellAction
+  | BundleStartAction | BundleCompleteAction;
