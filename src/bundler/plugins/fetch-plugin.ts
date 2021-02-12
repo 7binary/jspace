@@ -13,7 +13,7 @@ export const fetchPlugin = (input: string, debug = false) => ({
     // тут мы загружаем файлы (пакетов npm) по пути/кэшу и указываем загрузчик содержимого файла
 
     build.onLoad({ filter: /.*/ }, async (args: esbuild.OnLoadArgs) => {
-      // debug && console.log(args);
+      debug && console.log(args);
       // проверка кэша, если кэш найден загрузчик останавливается, иначе идет ниже искать по фильтру
       return await fileCache.getItem<esbuild.OnLoadResult>(args.path);
     });

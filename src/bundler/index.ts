@@ -31,7 +31,7 @@ const bundle = async (rawCode: string): Promise<BundledResut> => {
       entryPoints: ['index.js'],
       bundle: true,
       write: false,
-      plugins: [unpkgPathPlugin(), fetchPlugin(rawCode, true)],
+      plugins: [unpkgPathPlugin(), fetchPlugin(rawCode)],
       define: {
         'process.env.NODE_ENV': '"production"',
         global: 'window',
