@@ -93,7 +93,7 @@ const html = `
       eval(code);
       // если нечего показывать, то отобразим транспиляцию в ES6 код
       if (root.innerHTML === '' && transpiled.length) {
-        root.innerHTML = '<pre><b>Transpiled to ES2015</b><hr/>$1</pre>'.replace('$1', transpiled);
+        root.innerHTML = '<pre><b>Transpiled to ES6</b><hr/>$1</pre>'.replace('$1', transpiled);
       }
     } catch (err) {
       // ловим синхронные ошибки

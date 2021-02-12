@@ -24,6 +24,8 @@ const bundle = async (rawCode: string): Promise<BundledResut> => {
     const transformed = await service.transform(rawCode, {
       loader: 'jsx',
       target: 'es2015',
+      jsxFactory: '_React.createElement',
+      jsxFragment: '_React.Fragment',
     });
     const builded = await service.build({
       entryPoints: ['index.js'],
@@ -34,6 +36,8 @@ const bundle = async (rawCode: string): Promise<BundledResut> => {
         'process.env.NODE_ENV': '"production"',
         global: 'window',
       },
+      jsxFactory: '_React.createElement',
+      jsxFragment: '_React.Fragment',
     });
     result.transpiled = transformed.code;
     result.code = builded.outputFiles[0].text;
