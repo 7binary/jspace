@@ -4,3 +4,9 @@
   justify-content: space-between;
   height: calc(100% - 10px);
 }
+
+@media (max-width: 800px) {
+  .code-widget {
+    flex-direction: column;
+  }
+}

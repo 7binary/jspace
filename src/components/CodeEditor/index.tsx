@@ -12,9 +12,10 @@ import './syntax.css';
 interface Props {
   initialValue?: string;
   onChange: (value: string) => void;
+  isSmallScreen?: boolean
 }
 
-const Index: React.FC<Props> = ({ initialValue, onChange }) => {
+const Index: React.FC<Props> = ({ initialValue, onChange, isSmallScreen = false }) => {
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
   const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
@@ -50,14 +51,14 @@ const Index: React.FC<Props> = ({ initialValue, onChange }) => {
         value={initialValue}
         language="javascript"
         theme="vs-dark"
-        height="100%"
+        height={isSmallScreen ? '200px' : '100%'}
         options={{
           wordWrap: 'on',
           minimap: { enabled: false },
           showUnused: false,
           folding: false,
           lineNumbersMinChars: 3,
-          fontSize: 16,
+          fontSize: isSmallScreen ? 13 : 16,
           scrollBeyondLastLine: true,
           automaticLayout: true,
         }}

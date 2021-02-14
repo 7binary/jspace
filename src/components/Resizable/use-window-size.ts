@@ -8,6 +8,7 @@ export default function useWindowSize() {
 
   useEffect(() => {
     let timer: any;
+
     const handleResize = () => {
       // Debouncing - механизм предотвращения повторного срабатывания в интервале 100мс
       if (timer) {
@@ -19,7 +20,12 @@ export default function useWindowSize() {
     };
     window.addEventListener('resize', handleResize);
 
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return windowSize;

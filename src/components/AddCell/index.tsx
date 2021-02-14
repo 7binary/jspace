@@ -23,7 +23,7 @@ const AddCell: React.FC<Props> = ({ prevCellId, forceVisible = false }) => {
         </button>
 
         <button
-          onClick={() => insertCellAfter(prevCellId, 'code')}
+          onClick={() => insertCellAfter(prevCellId, 'code', defaultCode)}
           className="add-cell__button button is-primary is-small"
         >
           <span className="icon is-small">
@@ -36,5 +36,11 @@ const AddCell: React.FC<Props> = ({ prevCellId, forceVisible = false }) => {
     </div>
   );
 };
+
+/* eslint-disable no-template-curly-in-string */
+const defaultCode =
+  'const person = \'Neo\';\n' +
+  'const wakeUp = (name) => `Wake up, ${name}...`;\n' +
+  'wakeUp(person)';
 
 export default AddCell;

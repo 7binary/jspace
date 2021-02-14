@@ -8,7 +8,7 @@ export const useCumulativeCode = (cellId: string): string =>
     const showFunc = `
       var show = (value) => {
         const root = document.querySelector('#root');
-        if (typeof value === 'object') {
+        if (value && typeof value === 'object') {
           if (value.$$typeof && value.props) {
             _ReactDOM.render(value, root);
           } else {
@@ -31,14 +31,22 @@ export const useCumulativeCode = (cellId: string): string =>
         } else {
           cumulativeCode.push(showFuncNoop);
         }
-        // если последняя строка только имя переменной - выводим ее значение на экран через show()
+        // если последняя строка только имя переменной или вызов функции - покажем через show()
         let content = c.content;
         for (const varName of getVariableNames(c.content)) {
-          const matcher = '\n' + varName;
-          if (c.content.endsWith(matcher) || c.content.endsWith(`${matcher};`)) {
-            const lastOccuredIndex = c.content.lastIndexOf(matcher);
-            content = content.substr(0, lastOccuredIndex) + `\nshow(${varName});`;
+          let lastLine = c.content.split('\n').pop();
+          if (!lastLine) {
             break;
+          }
+          if (lastLine.endsWith(';')) {
+            lastLine = lastLine.slice(0, -1);
+          }
+          const regex = new RegExp(`${varName}(.+)`, 'g');
+          if (lastLine === varName || lastLine.match(regex)) {
+            const lines = c.content.split('\n');
+            lines.pop();
+            lines.push(`show( ${lastLine} );`);
+            content = lines.join('\n');
           }
         }
 
@@ -54,5 +62,5 @@ export const useCumulativeCode = (cellId: string): string =>
 
 const getVariableNames = (code: string): string[] => {
   // @ts-ignore
-  return [...code.matchAll(/(var|const|let) ([a-zA-z$_]+)/g)].map(match => match[2]);
+  return [...code.matchAll(/(var|const|let|function) ([a-zA-Z$_]+)/g)].map(match => match[2]);
 };

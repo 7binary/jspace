@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 import './text-editor.css';
 import { Cell } from '../../state';
 import { useActions } from '../../hooks/use-actions';
+import { useMediaQuery } from '../../hooks/use-media-query';
 
 const TextEditor: React.FC<{cell: Cell}> = ({ cell }) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [editing, setEditing] = useState(false);
   const { updateCell } = useActions();
+  const isSmallScreen = useMediaQuery('(max-width: 800px)');
 
   useEffect(() => {
     const listener = (event: MouseEvent) => {
@@ -25,7 +27,11 @@ const TextEditor: React.FC<{cell: Cell}> = ({ cell }) => {
   if (editing) {
     return (
       <div className="text-editor" ref={ref}>
-        <MDEditor value={cell.content} onChange={(v) => updateCell(cell.id, v || '')}/>
+        <MDEditor
+          value={cell.content}
+          onChange={(v) => updateCell(cell.id, v || '')}
+          preview={isSmallScreen ? 'edit' : 'live'}
+        />
       </div>
     );
   }
