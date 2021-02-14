@@ -41,7 +41,7 @@ export const useCumulativeCode = (cellId: string): string =>
           if (lastLine.endsWith(';')) {
             lastLine = lastLine.slice(0, -1);
           }
-          const regex = new RegExp(`${varName}(.+)`, 'g');
+          const regex = new RegExp(`^${varName}(.+)$`, 'g');
           if (lastLine === varName || lastLine.match(regex)) {
             const lines = c.content.split('\n');
             lines.pop();

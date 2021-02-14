@@ -1,5 +1,6 @@
 import './add-cell.scss';
 import { useActions } from '../../hooks/use-actions';
+import { useTypedSelector } from '../../hooks/use-typed-selector';
 
 interface Props {
   prevCellId: string | null;
@@ -8,6 +9,15 @@ interface Props {
 
 const AddCell: React.FC<Props> = ({ prevCellId, forceVisible = false }) => {
   const { insertCellAfter } = useActions();
+  const hasDefaultCode = useTypedSelector(state => {
+    let found = false;
+    Object.keys(state.cells.data).forEach(key => {
+      if (state.cells.data[key].content.includes('wakeUp')) {
+        found = true;
+      }
+    });
+    return found;
+  });
 
   return (
     <div className={forceVisible ? 'add-cell add-cell--visible' : 'add-cell'}>
@@ -23,7 +33,7 @@ const AddCell: React.FC<Props> = ({ prevCellId, forceVisible = false }) => {
         </button>
 
         <button
-          onClick={() => insertCellAfter(prevCellId, 'code', defaultCode)}
+          onClick={() => insertCellAfter(prevCellId, 'code', hasDefaultCode ? '' : defaultCode)}
           className="add-cell__button button is-primary is-small"
         >
           <span className="icon is-small">
