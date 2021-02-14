@@ -51,6 +51,6 @@ const AddCell: React.FC<Props> = ({ prevCellId, forceVisible = false }) => {
 const defaultCode =
   'const person = \'Neo\';\n' +
   'const wakeUp = (name) => `Wake up, ${name}...`;\n' +
-  'wakeUp(person)';
+  'wakeUp(person);';
 
 export default AddCell;
