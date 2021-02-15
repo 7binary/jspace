@@ -1,5 +1,5 @@
 import './add-cell.scss';
-import { useActions, useTypedSelector } from 'hooks';
+import { useActions, useTypedSelector } from 'src/hooks';
 
 interface Props {
   prevCellId: string | null;

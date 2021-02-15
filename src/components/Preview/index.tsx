@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import './preview.css';
-import { BundledResut } from '../../bundler';
+import { BundledResut } from 'src/bundler';
 
 interface Props {
   bundled?: BundledResut;

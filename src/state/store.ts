@@ -1,35 +1,20 @@
-import { applyMiddleware, createStore, compose } from 'redux';
-import thunk from 'redux-thunk';
-import rootReducer from './reducers';
-import { ActionType } from './action-types';
+import { applyMiddleware, createStore, compose, AnyAction } from 'redux';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import rootReducer, { RootState } from './reducers';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
 // @ts-ignore
-const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] as typeof compose || compose;
+const persistConfig = { key: 'root', storage };
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
+type DispatchFunctionType = ThunkDispatch<RootState, undefined, AnyAction>;
+
+export const store = createStore(
+  persistedReducer,
+  composeEnhancers(applyMiddleware<DispatchFunctionType, RootState>(thunk)),
+);
+export const persistor = persistStore(store);
 export type AppDispatch = typeof store.dispatch;
-
-// start data for demo purpose
-store.dispatch({
-  type: ActionType.INSERT_CELL_AFTER,
-  payload: {
-    id: null,
-    type: 'code',
-    content: `import React from 'react';
-import ReactDOM from 'react-dom';
-const App = () => <h1 style={{textAlign:'center'}}>Hello</h1>;
-ReactDOM.render(<App/>, document.querySelector('#root'));`,
-  },
-});
-
-store.dispatch({
-  type: ActionType.INSERT_CELL_AFTER,
-  payload: {
-    id: null,
-    type: 'text',
-    content: `# Click to edit!
-- Mark Down
-- Syntax`,
-  },
-});
 

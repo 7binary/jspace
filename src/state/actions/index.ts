@@ -1,6 +1,6 @@
 import { ActionType } from '../action-types';
 import { CellType } from '../cell';
-import { BundledResut } from '../../bundler';
+import { BundledResut } from 'src/bundler';
 
 export type Direction = 'up' | 'down';
 

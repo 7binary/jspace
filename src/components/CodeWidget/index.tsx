@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
-import CodeEditor from 'components/CodeEditor';
-import Preview from 'components/Preview';
-import Resizable from 'components/Resizable';
-import { Cell } from 'state';
-import { useActions, useTypedSelector, useMediaQuery, useCumulativeCode } from 'hooks';
+import CodeEditor from 'src/components/CodeEditor';
+import Preview from 'src/components/Preview';
+import Resizable from 'src/components/Resizable';
+import { Cell } from 'src/state';
+import { useActions, useTypedSelector, useMediaQuery, useCumulativeCode } from 'src/hooks';
 import './code-widget.css';
 
 const CodeWidget: React.FC<{cell: Cell}> = ({ cell }) => {

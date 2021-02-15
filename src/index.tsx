@@ -3,15 +3,16 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import { store } from 'state';
-import CellList from 'components/CellList';
+import { store, persistor } from 'src/state';
+import CellList from 'src/components/CellList';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const App = () => {
   return (
     <Provider store={store}>
-      <div>
+      <PersistGate loading={null} persistor={persistor}>
         <CellList/>
-      </div>
+      </PersistGate>
     </Provider>
   );
 };

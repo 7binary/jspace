@@ -1,4 +1,4 @@
-import { useActions } from 'hooks';
+import { useActions } from 'src/hooks';
 import './cell-action-bar.css';
 
 const CellActionBar: React.FC<{id: string}> = ({ id }) => {

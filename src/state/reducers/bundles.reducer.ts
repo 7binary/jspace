@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { BundledResut } from '../../bundler';
+import { BundledResut } from 'src/bundler';
 import { Action } from '../actions';
 import { ActionType } from '../action-types';
 

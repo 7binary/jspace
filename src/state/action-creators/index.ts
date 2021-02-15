@@ -10,7 +10,7 @@ import {
 import { ActionType } from '../action-types';
 import { CellType } from '../cell';
 import { AppDispatch } from '../store';
-import bundle, { BundledResut } from '../../bundler';
+import bundle, { BundledResut } from 'src/bundler';
 
 export const updateCell = (id: string, content: string): UpdateCellAction => ({
   type: ActionType.UPDATE_CELL,
