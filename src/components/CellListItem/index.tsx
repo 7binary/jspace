@@ -1,7 +1,7 @@
-import { Cell } from '../../state';
-import CodeWidget from '../CodeWidget';
-import TextEditor from '../TextEditor';
-import CellActionBar from '../CellActionBar';
+import { Cell } from 'state';
+import CodeWidget from 'components/CodeWidget';
+import TextEditor from 'components/TextEditor';
+import CellActionBar from 'components/CellActionBar';
 import './cell-list-item.css';
 
 const CellListItem: React.FC<{cell: Cell}> = ({ cell }) => {

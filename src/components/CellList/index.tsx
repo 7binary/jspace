@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
-import { useTypedSelector } from '../../hooks/use-typed-selector';
-import CellListItem from '../CellListItem';
-import AddCell from '../AddCell';
+import { useTypedSelector } from 'hooks';
+import CellListItem from 'components/CellListItem';
+import AddCell from 'components/AddCell';
 import './cell-list.css';
 
 const CellList: React.FC = () => {

@@ -1,56 +1,71 @@
-import './add-cell.scss';
-import { useActions } from '../../hooks/use-actions';
-import { useTypedSelector } from '../../hooks/use-typed-selector';
+import { useRef } from 'react';
+import MonacoEditor, { Monaco } from '@monaco-editor/react';
+import { editor } from 'monaco-editor';
+import prettier from 'prettier';
+import parser from 'prettier/parser-babel';
+import Highlighter from 'monaco-jsx-highlighter';
+import codeshift from 'jscodeshift';
+
+import './code-editor.css';
+import './syntax.css';
 
 interface Props {
-  prevCellId: string | null;
-  forceVisible?: boolean;
+  initialValue?: string;
+  onChange: (value: string) => void;
+  isSmallScreen?: boolean
 }
 
-const AddCell: React.FC<Props> = ({ prevCellId, forceVisible = false }) => {
-  const { insertCellAfter } = useActions();
-  const hasDefaultCode = useTypedSelector(state => {
-    let found = false;
-    Object.keys(state.cells.data).forEach(key => {
-      if (state.cells.data[key].content.includes('const wakeUp =')) {
-        found = true;
-      }
-    });
-    return found;
-  });
+const Index: React.FC<Props> = ({ initialValue, onChange, isSmallScreen = false }) => {
+  const editorRef = useRef<editor.IStandaloneCodeEditor>();
+
+  const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+    editor.onDidChangeModelContent(() => onChange(editor.getValue()));
+    editor.getModel()?.updateOptions({ tabSize: 2 });
+    editorRef.current = editor;
+    // подсветка синтакса JSX, скрывая вывод ошибок в консольку
+    const highlighter = new Highlighter(monaco, codeshift, editor);
+    highlighter.highLightOnDidChangeModelContent(() => {}, () => {}, undefined, () => {});
+    editor.setPosition({ lineNumber: Infinity, column: Infinity });
+    editor.focus();
+  };
+
+  const formatCode = () => {
+    const unformatted = editorRef.current?.getValue();
+    const formatted = prettier.format(unformatted as string, {
+      parser: 'babel',
+      plugins: [parser],
+      useTabs: false,
+      semi: true,
+      singleQuote: true,
+    }).replace(/\n$/, '');
+    editorRef.current?.setValue(formatted);
+  };
 
   return (
-    <div className={forceVisible ? 'add-cell add-cell--visible' : 'add-cell'}>
-      <div className="add-cell__buttons">
-        <button
-          onClick={() => insertCellAfter(prevCellId, 'text')}
-          className="add-cell__button button is-primary is-small"
-        >
-          <span className="icon is-small">
-            <i className="fas fa-plus"/>
-          </span>
-          <span className="add-cell-text">Markdown text</span>
-        </button>
+    <div className="editor-wrapper">
+      <button
+        className="button button-format is-primary is-small"
+        onClick={formatCode}
+      >Format @ Prettier</button>
 
-        <button
-          onClick={() => insertCellAfter(prevCellId, 'code', hasDefaultCode ? '' : defaultCode)}
-          className="add-cell__button button is-primary is-small"
-        >
-          <span className="icon is-small">
-            <i className="fas fa-plus"/>
-          </span>
-          <span className="add-cell-text">Javascript code</span>
-        </button>
-      </div>
-      <div className="add-cell__divider"/>
-    </div>
-  );
+      <MonacoEditor
+        onMount={handleEditorDidMount}
+        value={initialValue}
+        language="javascript"
+        theme="vs-dark"
+        height={isSmallScreen ? '200px' : '100%'}
+        options={{
+          wordWrap: 'on',
+          minimap: { enabled: false },
+          showUnused: false,
+          folding: false,
+          lineNumbersMinChars: 3,
+          fontSize: isSmallScreen ? 13 : 16,
+          scrollBeyondLastLine: true,
+          automaticLayout: true,
+        }}
+      />
+    </div>);
 };
 
-/* eslint-disable no-template-curly-in-string */
-const defaultCode =
-  'const person = \'Neo\';\n' +
-  'const wakeUp = (name) => `Wake up, ${name}...`;\n' +
-  'wakeUp(person)';
-
-export default AddCell;
+export default Index;

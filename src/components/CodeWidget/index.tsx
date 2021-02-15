@@ -1,14 +1,11 @@
 import { useEffect } from 'react';
 
-import CodeEditor from '../../components/CodeEditor';
-import Preview from '../../components/Preview';
-import Resizable from '../Resizable';
-import { Cell } from '../../state';
-import { useActions } from '../../hooks/use-actions';
-import { useTypedSelector } from '../../hooks/use-typed-selector';
-import { useCumulativeCode } from '../../hooks/use-cumulative-code';
+import CodeEditor from 'components/CodeEditor';
+import Preview from 'components/Preview';
+import Resizable from 'components/Resizable';
+import { Cell } from 'state';
+import { useActions, useTypedSelector, useMediaQuery, useCumulativeCode } from 'hooks';
 import './code-widget.css';
-import { useMediaQuery } from '../../hooks/use-media-query';
 
 const CodeWidget: React.FC<{cell: Cell}> = ({ cell }) => {
   const { updateCell, createBundle } = useActions();

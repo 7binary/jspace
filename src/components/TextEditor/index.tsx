@@ -1,9 +1,8 @@
 import MDEditor from '@uiw/react-md-editor';
 import { useEffect, useRef, useState } from 'react';
 import './text-editor.css';
-import { Cell } from '../../state';
-import { useActions } from '../../hooks/use-actions';
-import { useMediaQuery } from '../../hooks/use-media-query';
+import { Cell } from 'state';
+import { useActions, useMediaQuery } from 'hooks';
 
 const TextEditor: React.FC<{cell: Cell}> = ({ cell }) => {
   const ref = useRef<HTMLDivElement | null>(null);
