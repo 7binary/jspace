@@ -1,0 +1,17 @@
+.action-save {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  opacity: 0.35;
+  transition: opacity 0.3s;
+}
+
+.action-save:hover {
+  opacity: 1;
+}
+
+.action-link {
+  margin-left: 10px;
+  line-height: 30px;
+}
