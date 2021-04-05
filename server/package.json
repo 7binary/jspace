@@ -21,7 +21,7 @@
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "express-validator": "^6.10.0",
-    "fork-ts-checker-webpack-plugin": "^6.2.0",
+    "fork-ts-checker-webpack-plugin": "^7.0.0-alpha.1",
     "http-proxy-middleware": "^1.1.0",
     "jsonwebtoken": "^8.5.1",
     "nanoid": "^3.1.22",
