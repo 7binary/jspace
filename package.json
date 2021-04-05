@@ -21,5 +21,10 @@
   "homepage": "https://github.com/7binary/jspace#readme",
   "dependencies": {
     "concurrently": "^6.0.0"
+  },
+  "devDependencies": {
+    "shipit-cli": "^5.3.0",
+    "shipit-deploy": "^5.3.0",
+    "shipit-shared": "^4.4.2"
   }
 }
