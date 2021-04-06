@@ -1,6 +1,6 @@
 const path = require('path');
+const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
-const Dotenv = require('dotenv-webpack');
 const ForkTsChecker = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
@@ -33,7 +33,13 @@ module.exports = {
     ],
   },
   plugins: [
-    new Dotenv(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        SERVER_PORT: 5000,
+        JWT_KEY: '"keyAny"',
+        DB_STRING: '"postgres://postgres:admin@localhost:5432/jspace"',
+      },
+    }),
     new ForkTsChecker(),
   ],
   externalsPresets: { node: true }, // in order to ignore built-in modules like path, fs, etc.

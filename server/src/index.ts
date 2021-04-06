@@ -15,7 +15,7 @@ const start = async () => {
     await db.sync();
     console.log(`=> Connected to DB ${process.env.DB_STRING}`);
   } catch (error) {
-    throw new DatabaseConnectionError();
+    throw new DatabaseConnectionError(error.toString());
   }
 
   app.listen(process.env.SERVER_PORT, async () => {
