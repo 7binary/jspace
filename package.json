@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently --kill-others \"yarn start:server\" \"yarn start:client\"",
-    "build": "yarn --cwd \"server\" build && yarn --cwd \"client\" build",
     "prep": "yarn --cwd \"server\" && yarn --cwd \"client\"",
-    "deploy": "npx shipit prod deploy"
+    "build": "cd server && yarn build",
+    "dep": "npx shipit prod deploy"
   },
   "repository": {
     "type": "git",

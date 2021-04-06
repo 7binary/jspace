@@ -1,0 +1,2 @@
+(this["webpackJsonpjspace-client"]=this["webpackJsonpjspace-client"]||[]).push([[51],{245:function(e,a){Prism.languages.brainfuck={pointer:{pattern:/<|>/,alias:"keyword"},increment:{pattern:/\+/,alias:"inserted"},decrement:{pattern:/-/,alias:"deleted"},branching:{pattern:/\[|\]/,alias:"important"},operator:/[.,]/,comment:/\S+/}}}]);
+//# sourceMappingURL=51.5fbe3c49.chunk.js.map
