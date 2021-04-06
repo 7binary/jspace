@@ -1,2 +1,0 @@
-(this["webpackJsonpjspace-client"]=this["webpackJsonpjspace-client"]||[]).push([[421],{615:function(s,e){var a=Prism.util.clone(Prism.languages.typescript);Prism.languages.tsx=Prism.languages.extend("jsx",a)}}]);
-//# sourceMappingURL=421.c99387c0.chunk.js.map

@@ -13,7 +13,7 @@ module.exports = shipit => {
       keepReleases: 3,
       shared: {
         overwrite: true,
-        dirs: ['node_modules'],
+        dirs: ['node_modules', 'client/node_modules', 'server/node_modules'],
         files: ['client/.env', 'server/.env'],
       },
     },
@@ -39,13 +39,13 @@ module.exports = shipit => {
   });
 
   shipit.blTask('yarn-install', async () => {
-    shipit.remote(`cd ${shipit.releasePath}/server && yarn install`);
-    shipit.remote(`cd ${shipit.releasePath}/client && yarn install`);
+    shipit.remote(`yarn --cwd \"${shipit.releasePath}/server\" install`);
+    shipit.remote(`yarn --cwd \"${shipit.releasePath}/client\" install`);
   });
 
   shipit.blTask('yarn-build', async () => {
-    shipit.remote(`cd ${shipit.releasePath}/server && yarn build`);
-    shipit.remote(`cd ${shipit.releasePath}/client && yarn build:low`);
+    shipit.remote(`yarn --cwd \"${shipit.releasePath}/server\" build`);
+    shipit.remote(`yarn --cwd \"${shipit.releasePath}/client\" build`);
   });
 
   shipit.blTask('pm2-server', async () => {
