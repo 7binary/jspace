@@ -1,4 +1,4 @@
-require('dotenv').config({ path: __dirname + '/../.env' });
+import 'dotenv/config';
 import { app } from './app';
 import { db } from './db';
 import { DatabaseConnectionError } from './errors';

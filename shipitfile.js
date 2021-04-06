@@ -10,7 +10,7 @@ module.exports = shipit => {
       key: '/Users/artemzinovev/.ssh/id_rsa',
       deployTo: `/home/webuser/${appName}`,
       repositoryUrl: 'https://github.com/7binary/jspace.git',
-      keepReleases: 3,
+      keepReleases: 2,
       shared: {
         overwrite: true,
         dirs: ['node_modules', 'client/node_modules', 'server/node_modules'],
@@ -31,11 +31,19 @@ module.exports = shipit => {
 
   // Our listeners and tasks will go here
   shipit.on('updated', () => {
-    shipit.start('yarn-install', 'yarn-build', 'copy-config');
+    // shipit.start('yarn-install', 'yarn-build', 'copy-config'); // to build on server
+    shipit.start('copy-build', 'yarn-install', 'copy-config');
   });
 
   shipit.on('published', () => {
     shipit.start('pm2-server');
+  });
+
+  shipit.blTask('copy-build', async () => {
+    shipit.local(`yarn --cwd \"server\" build`);
+    shipit.local(`yarn --cwd \"client\" build`);
+    shipit.copyToRemote('./client/build', `${shipit.releasePath}/client/`);
+    shipit.copyToRemote('./server/dist', `${shipit.releasePath}/server/`);
   });
 
   shipit.blTask('yarn-install', async () => {
@@ -61,7 +69,7 @@ module.exports = {
 apps: [
   {
     name: '${appName}',
-    script: '${shipit.releasePath}/hello.js',
+    script: '${shipit.releasePath}/server/dist/index.js',
     watch: true,
     autorestart: true,
     restart_delay: 1000,
