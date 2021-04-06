@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently --kill-others \"yarn start:server\" \"yarn start:client\"",
     "prep": "yarn --cwd \"server\" && yarn --cwd \"client\"",
-    "build": "cd server && yarn build",
+    "build": "yarn --cwd \"server\" build && yarn --cwd \"client\" build",
     "dep": "npx shipit prod deploy"
   },
   "repository": {

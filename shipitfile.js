@@ -31,19 +31,21 @@ module.exports = shipit => {
 
   // Our listeners and tasks will go here
   shipit.on('updated', () => {
-    shipit.start('yarn-prep', 'yarn-build', 'copy-config');
+    shipit.start('yarn-install', 'yarn-build', 'copy-config');
   });
 
   shipit.on('published', () => {
     shipit.start('pm2-server');
   });
 
-  shipit.blTask('yarn-prep', async () => {
-    shipit.remote(`cd ${shipit.releasePath} && yarn prep`);
+  shipit.blTask('yarn-install', async () => {
+    shipit.remote(`cd ${shipit.releasePath}/server && yarn install`);
+    shipit.remote(`cd ${shipit.releasePath}/client && yarn install`);
   });
 
   shipit.blTask('yarn-build', async () => {
-    shipit.remote(`cd ${shipit.releasePath} && yarn build`);
+    shipit.remote(`cd ${shipit.releasePath}/server && yarn build`);
+    shipit.remote(`cd ${shipit.releasePath}/client && yarn build`);
   });
 
   shipit.blTask('pm2-server', async () => {
