@@ -1,6 +1,7 @@
 const path = require('path');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
+const Dotenv = require('dotenv-webpack');
+const ForkTsChecker = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -31,7 +32,10 @@ module.exports = {
       },
     ],
   },
-  plugins: [new ForkTsCheckerWebpackPlugin()],
+  plugins: [
+    new Dotenv(),
+    new ForkTsChecker(),
+  ],
   externalsPresets: { node: true }, // in order to ignore built-in modules like path, fs, etc.
   externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
 };
