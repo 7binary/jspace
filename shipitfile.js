@@ -31,8 +31,8 @@ module.exports = shipit => {
 
   // Our listeners and tasks will go here
   shipit.on('updated', () => {
-    // shipit.start('yarn-install', 'yarn-build', 'copy-config'); // to build on server
-    shipit.start('copy-build', 'yarn-install', 'copy-config');
+    // shipit.start('yarn-install', 'yarn-build', 'copy-config'); // to build at server
+    shipit.start('copy-build', 'yarn-install', 'copy-config'); // to build at local
   });
 
   shipit.on('published', () => {
@@ -40,20 +40,17 @@ module.exports = shipit => {
   });
 
   shipit.blTask('copy-build', async () => {
-    shipit.local(`yarn --cwd \"server\" build`);
-    shipit.local(`yarn --cwd \"client\" build`);
+    shipit.local(`yarn build`);
     shipit.copyToRemote('./client/build', `${shipit.releasePath}/client/`);
     shipit.copyToRemote('./server/dist', `${shipit.releasePath}/server/`);
   });
 
   shipit.blTask('yarn-install', async () => {
-    shipit.remote(`yarn --cwd \"${shipit.releasePath}/server\" install`);
-    shipit.remote(`yarn --cwd \"${shipit.releasePath}/client\" install`);
+    shipit.remote(`yarn --cwd "${shipit.releasePath}" install`);
   });
 
   shipit.blTask('yarn-build', async () => {
-    shipit.remote(`yarn --cwd \"${shipit.releasePath}/server\" build`);
-    shipit.remote(`yarn --cwd \"${shipit.releasePath}/client\" build`);
+    shipit.remote(`yarn --cwd "${shipit.releasePath}" build`);
   });
 
   shipit.blTask('pm2-server', async () => {
