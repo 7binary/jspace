@@ -45,7 +45,7 @@ module.exports = shipit => {
 
   shipit.blTask('yarn-build', async () => {
     shipit.remote(`cd ${shipit.releasePath}/server && yarn build`);
-    shipit.remote(`cd ${shipit.releasePath}/client && yarn build`);
+    shipit.remote(`cd ${shipit.releasePath}/client && yarn build:low`);
   });
 
   shipit.blTask('pm2-server', async () => {
