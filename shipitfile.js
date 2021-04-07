@@ -57,6 +57,11 @@ apps: [
     name: '${appName}',
     script: '${shipit.releasePath}/server/dist/index.js',
     watch: true,
+    watch_delay: 1000,
+    ignore_watch : ["node_modules", "client/node_modules", "server/node_modules"],
+    watch_options: {
+      "followSymlinks": false
+    }
     autorestart: true,
     restart_delay: 1000,
     env: {
