@@ -2,6 +2,7 @@ module.exports = shipit => {
   require('shipit-deploy')(shipit);
   require('shipit-shared')(shipit);
   const fs = require('fs');
+  const path = require('path');
 
   const appName = 'jspace';
 
@@ -21,13 +22,6 @@ module.exports = shipit => {
       servers: 'webuser@149.154.64.114:9009',
     },
   });
-
-  const path = require('path');
-  const ecosystemFilePath = path.join(
-    shipit.config.deployTo,
-    'shared',
-    'ecosystem.config.js',
-  );
 
   // Our listeners and tasks will go here
   shipit.on('updated', () => {
@@ -55,9 +49,7 @@ module.exports = shipit => {
 
   shipit.blTask('pm2-server', async () => {
     await shipit.remote(`pm2 delete -s ${appName} || :`);
-    await shipit.remote(
-      `pm2 start ${ecosystemFilePath} --env production --watch true`,
-    );
+    await shipit.remote(`pm2 start ${ecosystemFilePath} --env production --watch true`);
   });
 
   shipit.blTask('copy-config', async () => {
@@ -83,6 +75,7 @@ apps: [
       if (err) throw err;
       console.log('=> File <ecosystem.config.js> created successfully.');
     });
+    const ecosystemFilePath = path.join(shipit.config.deployTo, 'shared', 'ecosystem.config.js');
     await shipit.copyToRemote('ecosystem.config.js', ecosystemFilePath);
   });
 
