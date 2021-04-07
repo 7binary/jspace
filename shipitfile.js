@@ -2,14 +2,12 @@ module.exports = shipit => {
   require('shipit-deploy')(shipit);
   require('shipit-shared')(shipit);
   const fs = require('fs');
-  const path = require('path');
 
   const appName = 'jspace';
-
   shipit.initConfig({
     default: {
-      key: '/Users/artemzinovev/.ssh/id_rsa',
       deployTo: `/home/webuser/${appName}`,
+      key: '/Users/artemzinovev/.ssh/id_rsa',
       repositoryUrl: 'https://github.com/7binary/jspace.git',
       keepReleases: 2,
       shared: {
@@ -18,10 +16,9 @@ module.exports = shipit => {
         files: ['client/.env', 'server/.env'],
       },
     },
-    prod: {
-      servers: 'webuser@149.154.64.114:9009',
-    },
+    prod: { servers: 'webuser@149.154.64.114:9009' },
   });
+  const ecosystemFilePath = `${shipit.config.deployTo}/shared/ecosystem.config.js`;
 
   // Our listeners and tasks will go here
   shipit.on('updated', () => {
@@ -75,8 +72,6 @@ apps: [
       if (err) throw err;
       console.log('=> File <ecosystem.config.js> created successfully.');
     });
-    const ecosystemFilePath = path.join(shipit.config.deployTo, 'shared', 'ecosystem.config.js');
     await shipit.copyToRemote('ecosystem.config.js', ecosystemFilePath);
   });
-
 };
