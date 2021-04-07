@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const ForkTsChecker = require('fork-ts-checker-webpack-plugin');
 
@@ -33,15 +32,6 @@ module.exports = {
     ],
   },
   plugins: [
-    // определяем переменные process.env для сборки вебпаком, для прода
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"development"',
-        SERVER_PORT: 5000,
-        JWT_KEY: '"keyAny"',
-        DB_STRING: '"postgres://webuser@localhost:5432/jspace"',
-      },
-    }),
     new ForkTsChecker(),
   ],
   externalsPresets: { node: true }, // in order to ignore built-in modules like path, fs, etc.

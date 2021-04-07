@@ -61,14 +61,24 @@ apps: [
     ignore_watch : ["node_modules", "client/node_modules", "server/node_modules"],
     watch_options: {
       "followSymlinks": false
-    }
+    },
     autorestart: true,
     restart_delay: 1000,
+    "max_memory_restart": "900",
+    "node_args": [
+       "--max_old_space_size=950"
+    ],
     env: {
-      NODE_ENV: 'development'
+      NODE_ENV: 'development',
+      SERVER_PORT: 5000,
+      JWT_KEY: 'keyAny',
+      DB_STRING: 'postgres://webuser@localhost:5432/jspace'
     },
     env_production: {
-      NODE_ENV: 'production'
+      NODE_ENV: 'production',
+      SERVER_PORT: 5000,
+      JWT_KEY: 'keyAny',
+      DB_STRING: 'postgres://webuser@localhost:5432/jspace'
     }
   }
 ]
