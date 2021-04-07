@@ -6,9 +6,8 @@ import { NotFoundError } from '../errors';
 
 const router = express.Router();
 
-router.put('/api/cells/:uuid', [
-    body('content').notEmpty().isString().withMessage('Fill the content'),
-  ],
+router.put('/api/cells/:uuid',
+  body('content').notEmpty().isString().withMessage('Fill the content'),
   validateRequest,
   async (req: express.Request, res: express.Response) => {
     const { uuid } = req.params;

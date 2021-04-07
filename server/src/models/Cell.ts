@@ -1,6 +1,5 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { db } from '../db';
-import { nanoid } from 'nanoid';
 
 export type CellType = 'code' | 'text';
 
@@ -13,7 +12,7 @@ interface CellAttributes {
   lastViewAt?: Date;
 }
 
-interface CellCreationAttributes extends Optional<CellAttributes, 'id' | 'uuid'> {}
+interface CellCreationAttributes extends Optional<CellAttributes, 'id'> {}
 
 export class Cell extends Model<CellAttributes, CellCreationAttributes>
   implements CellAttributes {
@@ -56,12 +55,4 @@ Cell.init({
 }, {
   tableName: 'cells',
   sequelize: db,
-  hooks: {
-    beforeValidate: async function(cell) {
-      if (!cell.uuid) cell.uuid = nanoid(7);
-    },
-    beforeCreate: async function(cell) {
-      if (!cell.uuid) cell.uuid = nanoid(7);
-    },
-  },
 });

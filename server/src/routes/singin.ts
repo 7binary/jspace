@@ -1,17 +1,15 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest } from '../middlewares/validate-request';
-import { BadRequestError } from '../errors/bad-request-error';
-import { User } from '../models/User';
-import { PasswordService } from '../services/password-service';
-import { JwtService } from '../services/jwt-service';
+import { validateRequest } from '../middlewares';
+import { BadRequestError } from '../errors';
+import { User } from '../models';
+import { PasswordService, JwtService } from '../services';
 
 const router = express.Router();
 
-router.post('/api/signin', [
-    body('email').isEmail().withMessage('Provide a valid email'),
-    body('password').trim().notEmpty().withMessage('You must provide a password'),
-  ],
+router.post('/api/signin',
+  body('email').isEmail().withMessage('Provide a valid email'),
+  body('password').trim().notEmpty().withMessage('You must provide a password'),
   validateRequest,
   async (req: Request, res: Response) => {
     const { email, password } = req.body;

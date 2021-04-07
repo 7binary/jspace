@@ -7,11 +7,9 @@ import { JwtService } from '../services';
 
 const router = express.Router();
 
-router.post('/api/signup', [
-    body('email').isEmail().withMessage('Provide a valid email'),
-    body('password').trim().isLength({ min: 4, max: 20 })
-      .withMessage('Password must be between 4 and 20 characters length'),
-  ],
+router.post('/api/signup',
+  body('email').isEmail().withMessage('Provide a valid email'),
+  body('password').trim().isLength({ min: 4, max: 20 }).withMessage('Password must be between 4 and 20 characters length'),
   validateRequest,
   async (req: express.Request, res: express.Response) => {
 

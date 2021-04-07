@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
 import { validateRequest } from '../middlewares';
 import { Cell } from '../models';
+import { nanoid } from 'nanoid';
 
 const router = Router();
 
@@ -15,6 +16,7 @@ router.post('/api/cells',
       content,
       type,
       ownerId: req.currentUser?.id,
+      uuid: nanoid(7),
     });
 
     res.status(201).send({ cell });

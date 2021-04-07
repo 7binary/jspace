@@ -36,6 +36,7 @@ module.exports = {
     // определяем переменные process.env для сборки вебпаком, для прода
     new webpack.DefinePlugin({
       'process.env': {
+        NODE_ENV: '"development"',
         SERVER_PORT: 5000,
         JWT_KEY: '"keyAny"',
         DB_STRING: '"postgres://webuser@localhost:5432/jspace"',
