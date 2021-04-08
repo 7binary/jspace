@@ -10,14 +10,13 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
     });
   }
 
+  throw err;
+
   if (!isProd) {
     throw err;
   }
 
   return res.status(400).send({
-    errors: [{
-      message: 'Something went wrong.',
-      reason: err.toString(),
-    }],
+    errors: [{ message: 'Something went wrong.' }],
   });
 };
