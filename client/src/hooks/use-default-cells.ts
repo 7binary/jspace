@@ -5,19 +5,21 @@ import { ax } from '../utils/ax';
 import { Cell } from '../state';
 
 export const useDefaultCells = () => {
+  const cells = useTypedSelector(state => state.cells.data);
   const cellsCount = useTypedSelector(state => state.cells.order.length);
   const { insertCellAfter } = useActions();
 
   useEffect(() => {
     const path = window.location.pathname;
-
     // check uuid
     if (path && path.length >= 7) {
       const uuid = path.replace(/^\/|\/$/g, '');
       ax().get<{cell: Cell}>(`/api/cells/${uuid}`)
         .then(res => {
           const { cell } = res.data;
-          insertCellAfter(cell.uuid!, cell.type, cell.content);
+          if (!cells[cell.uuid!]) {
+            insertCellAfter(cell.uuid!, cell.type, cell.content);
+          }
         });
     } else if (cellsCount === 0) {
       // add default MarkDown cell

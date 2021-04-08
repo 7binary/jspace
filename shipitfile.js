@@ -44,8 +44,8 @@ module.exports = shipit => {
   });
 
   shipit.blTask('pm2-server', async () => {
-    //await shipit.remote(`pm2 delete -s ${appName} || :`);
-    //await shipit.remote(`pm2 start ${ecosystemFilePath} --env production --watch true`);
+    await shipit.remote(`pm2 delete -s ${appName} || :`);
+    await shipit.remote(`pm2 start ${ecosystemFilePath} --env production --watch true`);
   });
 
   shipit.blTask('copy-config', async () => {
