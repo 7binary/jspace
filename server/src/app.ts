@@ -40,7 +40,10 @@ app.use(errorHandler);
 
 // client static. Builded (prod) or Proxied (dev)
 if (isProd) {
-  app.use(['/'], express.static(path.join(__dirname, '../../client/build')));
+  app.use(['/'], express.static(path.join(__dirname, '../../client/build'), {
+    etag: false,
+    maxAge: '1s',
+  }));
 } else {
   app.use(['/'], createProxyMiddleware({
     target: `http://localhost:${process.env.CLIENT_PORT}`,

@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently --kill-others \"yarn --cwd server start\" \"yarn --cwd client start\"",
-    "ins": "yarn --cwd server && yarn --cwd client",
     "build": "yarn --cwd server build && yarn --cwd client build",
+    "prepare": "yarn --cwd server && yarn --cwd client",
     "dep": "npx shipit prod deploy"
   },
   "repository": {

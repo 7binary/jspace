@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "cp .env.dev .env && ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "cp .env.prod .env && webpack --env production",
-    "build:local": "cp .env.local .env && webpack --env production",
-    "start": "cp .env.local .env && ts-node-dev --respawn --transpile-only src/index.ts",
+    "build:dev": "cp .env.dev .env && webpack --env production",
     "i:babel": "yarn add -D babel-loader @babel/core @babel/plugin-transform-runtime @babel/preset-env @babel/preset-typescript @babel/plugin-proposal-class-properties"
   },
   "keywords": [],

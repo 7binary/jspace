@@ -12,7 +12,7 @@ export const useDefaultCells = () => {
     const path = window.location.pathname;
 
     // check uuid
-    if (path && path.length >= 7 && !path.includes('/')) {
+    if (path && path.length >= 7) {
       ax().get<{cell: Cell}>(`/api/cells/${path}`)
         .then(res => {
           const { cell } = res.data;

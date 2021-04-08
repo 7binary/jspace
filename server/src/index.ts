@@ -13,6 +13,7 @@ const start = async () => {
 
   try {
     await db.authenticate();
+    await db.sync({ alter: true });
     await Cell.sync({ alter: true });
     await User.sync({ alter: true });
     console.log(`=> Connected to DB ${process.env.DB_STRING}`);

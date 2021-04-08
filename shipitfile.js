@@ -20,7 +20,6 @@ module.exports = shipit => {
   });
   const ecosystemFilePath = `${shipit.config.deployTo}/shared/ecosystem.config.js`;
 
-  // Our listeners and tasks will go here
   shipit.on('updated', () => {
     // shipit.start('yarn-install', 'yarn-build', 'copy-config'); // to build at server
     shipit.start('copy-build', 'yarn-install', 'copy-config'); // to build at local
