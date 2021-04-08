@@ -13,7 +13,8 @@ export const useDefaultCells = () => {
 
     // check uuid
     if (path && path.length >= 7) {
-      ax().get<{cell: Cell}>(`/api/cells/${path}`)
+      const uuid = path.replace(/^\/|\/$/g, '');
+      ax().get<{cell: Cell}>(`/api/cells/${uuid}`)
         .then(res => {
           const { cell } = res.data;
           insertCellAfter(cell.uuid!, cell.type, cell.content);

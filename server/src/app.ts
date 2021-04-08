@@ -40,7 +40,11 @@ app.use(errorHandler);
 
 // client static. Builded (prod) or Proxied (dev)
 if (isProd) {
-  app.use(['/', '/:uuid'], express.static(path.join(__dirname, '../../client/build'), {
+  app.use(['/'], express.static(path.join(__dirname, '../../client/build'), {
+    etag: false,
+    maxAge: '1s',
+  }));
+  app.use(['/:uuid'], express.static(path.join(__dirname, '../../client/build'), {
     etag: false,
     maxAge: '1s',
   }));
@@ -54,7 +58,7 @@ if (isProd) {
 
 // error handlers
 app.all('*', async () => {
-  throw new NotFoundError();
+  // throw new NotFoundError();
 });
 
 export { app };
