@@ -1,6 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const ForkTsChecker = require('fork-ts-checker-webpack-plugin');
+const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
 
 module.exports = {
   mode: 'production',
@@ -32,6 +34,8 @@ module.exports = {
     ],
   },
   plugins: [
+    // определяем переменные process.env для сборки вебпаком, для прода
+    new webpack.DefinePlugin({ 'process.env': JSON.stringify(dotenv.parsed) }),
     new ForkTsChecker(),
   ],
   externalsPresets: { node: true }, // in order to ignore built-in modules like path, fs, etc.

@@ -1,4 +1,4 @@
-import 'dotenv/config';
+process.env.NODE_ENV !== 'production' && require('dotenv').config({ path: __dirname + '/../.env' });
 import { app } from './app';
 import { db } from './db';
 import { DatabaseConnectionError } from './errors';

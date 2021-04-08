@@ -13,10 +13,10 @@ module.exports = shipit => {
       shared: {
         overwrite: true,
         dirs: ['node_modules', 'client/node_modules', 'server/node_modules'],
-        files: ['client/.env', 'server/.env'],
+        // files: ['client/.env', 'server/.env'],
       },
     },
-    prod: { servers: 'webuser@149.154.64.114:9009' },
+    prod: { servers: 'webuser@62.109.23.228:9009' },
   });
   const ecosystemFilePath = `${shipit.config.deployTo}/shared/ecosystem.config.js`;
 
@@ -64,21 +64,15 @@ apps: [
     },
     autorestart: true,
     restart_delay: 1000,
-    "max_memory_restart": "900",
+    "max_memory_restart": "2020",
     "node_args": [
-       "--max_old_space_size=950"
+       "--max_old_space_size=2048"
     ],
     env: {
-      NODE_ENV: 'development',
-      SERVER_PORT: 5000,
-      JWT_KEY: 'keyAny',
-      DB_STRING: 'postgres://webuser@localhost:5432/jspace'
+      NODE_ENV: 'development'
     },
     env_production: {
-      NODE_ENV: 'production',
-      SERVER_PORT: 5000,
-      JWT_KEY: 'keyAny',
-      DB_STRING: 'postgres://webuser@localhost:5432/jspace'
+      NODE_ENV: 'production'
     }
   }
 ]

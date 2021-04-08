@@ -4,11 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "yarn env:local && concurrently --kill-others \"yarn --cwd server start\" \"yarn --cwd client start\"",
+    "start": "concurrently --kill-others \"yarn --cwd server start\" \"yarn --cwd client start\"",
     "ins": "yarn --cwd server && yarn --cwd client",
-    "build": "yarn env:prod && yarn --cwd server build && yarn --cwd client build",
-    "env:prod": "cp .env.prod server/src/.env && cp .env.prod client/.env",
-    "env:local": "cp .env.local server/src/.env && cp .env.local client/.env",
+    "build": "yarn --cwd server build && yarn --cwd client build",
     "dep": "npx shipit prod deploy"
   },
   "repository": {
