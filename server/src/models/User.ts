@@ -11,7 +11,7 @@ import {
 } from 'sequelize';
 import { db } from '../db';
 import { Cell } from './Cell';
-import { PasswordService } from '../services/password-service';
+import { PasswordService } from '../services';
 
 // These are all the attributes in the User model
 interface UserAttributes {
@@ -85,6 +85,7 @@ User.init(
         user.password = await PasswordService.hashPassword(user.password);
       },
     },
+    freezeTableName: true,
   },
 );
 
