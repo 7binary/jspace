@@ -13,7 +13,7 @@ const CellActionSave: React.FC<{cell: Cell}> = ({ cell }) => {
 
   const share = async () => {
     const res = await ax().post<{cell: Cell}>('api/cells', cell);
-    const cellUrl = process.env.REACT_APP_BASE_URL + '/' + res.data.cell.uuid;
+    const cellUrl = process.env.REACT_APP_BASE_URL + '/' + res.data.cell.uuid + '/';
     setLink(cellUrl);
     if (handleCopy(cellUrl)) {
       toast(`Скопировано в буфер: ${cellUrl}`);
