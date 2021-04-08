@@ -1,4 +1,5 @@
-process.env.NODE_ENV !== 'production' && require('dotenv').config({ path: __dirname + '/../.env' });
+require('dotenv').config({ path: __dirname + '/../.env' });
+import { Cell, User } from './models';
 import { app } from './app';
 import { db } from './db';
 import { DatabaseConnectionError } from './errors';
@@ -12,7 +13,8 @@ const start = async () => {
 
   try {
     await db.authenticate();
-    await db.sync();
+    await User.sync({ alter: true });
+    await Cell.sync({ alter: true });
     console.log(`=> Connected to DB ${process.env.DB_STRING}`);
   } catch (error) {
     throw new DatabaseConnectionError(error.toString());
