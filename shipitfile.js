@@ -21,8 +21,8 @@ module.exports = shipit => {
   const ecosystemFilePath = `${shipit.config.deployTo}/shared/ecosystem.config.js`;
 
   shipit.on('updated', () => {
-    // shipit.start('yarn-install', 'yarn-build', 'copy-config'); // to build at server
     shipit.start('copy-build', 'yarn-install', 'copy-config'); // to build at local
+    // shipit.start('yarn-install', 'yarn-build', 'copy-config'); // to build at server
   });
 
   shipit.on('published', () => {
@@ -44,8 +44,8 @@ module.exports = shipit => {
   });
 
   shipit.blTask('pm2-server', async () => {
-    //await shipit.remote(`pm2 delete -s ${appName} || :`);
-    //await shipit.remote(`pm2 start ${ecosystemFilePath} --env production --watch true`);
+    await shipit.remote(`pm2 delete -s ${appName} || :`);
+    await shipit.remote(`pm2 start ${ecosystemFilePath} --env production --watch true`);
   });
 
   shipit.blTask('copy-config', async () => {
