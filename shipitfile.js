@@ -55,6 +55,7 @@ apps: [
   {
     name: '${appName}',
     script: '${shipit.releasePath}/server/dist/index.js',
+    instances: 1,
     watch: true,
     watch_delay: 1000,
     ignore_watch : ["node_modules", "client/node_modules", "server/node_modules"],
