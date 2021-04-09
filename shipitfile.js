@@ -21,8 +21,8 @@ module.exports = shipit => {
   const ecosystemFilePath = `${shipit.config.deployTo}/shared/ecosystem.config.js`;
 
   shipit.on('updated', () => {
-    shipit.start('copy-build', 'yarn-install', 'copy-config'); // to build at local
-    // shipit.start('yarn-install', 'yarn-build', 'copy-config'); // to build at server
+    shipit.start('copy-build', 'yarn-install', 'copy-config'); // local-build
+    // shipit.start('yarn-install', 'yarn-build', 'copy-config'); // server-build
   });
 
   shipit.on('published', () => {
@@ -37,6 +37,7 @@ module.exports = shipit => {
 
   shipit.blTask('yarn-install', async () => {
     shipit.remote(`yarn --cwd "${shipit.releasePath}" install`);
+    shipit.remote(`yarn --cwd "${shipit.releasePath}" prepare`);
   });
 
   shipit.blTask('yarn-build', async () => {
@@ -44,8 +45,8 @@ module.exports = shipit => {
   });
 
   shipit.blTask('pm2-server', async () => {
-    await shipit.remote(`pm2 delete -s ${appName} || :`);
-    await shipit.remote(`pm2 start ${ecosystemFilePath} --env production --watch true`);
+    // await shipit.remote(`pm2 delete -s ${appName} || :`);
+    // await shipit.remote(`pm2 start ${ecosystemFilePath} --env production --watch true`);
   });
 
   shipit.blTask('copy-config', async () => {
@@ -55,7 +56,8 @@ apps: [
   {
     name: '${appName}',
     script: '${shipit.releasePath}/server/dist/index.js',
-    instances: 1,
+    // instances: 2,
+    // exec_mode: "cluster",
     watch: true,
     watch_delay: 1000,
     ignore_watch : ["node_modules", "client/node_modules", "server/node_modules"],

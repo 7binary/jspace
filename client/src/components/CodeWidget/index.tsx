@@ -10,7 +10,7 @@ import './code-widget.css';
 const CodeWidget: React.FC<{cell: Cell}> = ({ cell }) => {
   const { updateCell, createBundle } = useActions();
   const bundle = useTypedSelector(state => state.bundles[cell.id]);
-  const cumulativeCode = useCumulativeCode(cell.id);
+  const cumulativeCode = useCumulativeCode(cell);
   const isSmallScreen = useMediaQuery('(max-width: 800px)');
 
   useEffect(() => {
