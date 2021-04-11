@@ -37,7 +37,7 @@ const cellsReducer = produce((state: CellsState, action: Action) => {
       const cell: Cell = {
         content: action.payload.content || '',
         type: action.payload.type,
-        id: randomId(),
+        id: action.payload.id || randomId(),
       };
       state.data[cell.id] = cell;
       const foundIndex = state.order.findIndex(id => id === action.payload.id);
