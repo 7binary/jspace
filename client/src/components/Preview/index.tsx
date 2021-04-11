@@ -54,6 +54,8 @@ const html = `
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
   }
+  
+  /* error */
   .err {
     padding: 10px 15px 15px;
     color: maroon;
@@ -62,21 +64,64 @@ const html = `
   .err h3 {
     margin-top: 0;
   }
+  
+  /* tabs */
+  .tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+  }
+  .tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+  }
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    background-color: #ddd;
+  }
+  /* Create an active/current tablink class */
+  .tab button.active {
+    background-color: #ccc;
+  }
+  
+  /* Style the tab content */
+  .tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+  }
+  
   /* console logger */
-  #log-container { overflow: auto; height: 150px; }
+  #console { overflow: auto; height: 150px; }
   .log-warn { color: orange }
   .log-error { color: red }
   .log-info { color: skyblue }
-  .log-log { color: silver }
+  .log-log { color: grey }
   .log-warn, .log-error { font-weight: bold; }
 </style>
 <script>
-  // чтоб был console вывод в превьюхе
-  rewireLoggingToElement(
-    () => document.getElementById('log'),
-    () => document.getElementById('log-container'), true);
+  // установка переключения вкладки
+  function openTab(tabName) {
+    const tabcontent = document.getElementsByClassName('tabcontent');
+    for (let i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = 'none';
+    }
+    const tablinks = document.getElementsByClassName('tablinks');
+    for (let i = 0; i < tablinks.length; i++) {
+      tablinks[i].classList.remove('active');
+    }
+    document.getElementById(tabName).style.display = "block";
+    document.querySelector('[data-tab="' + tabName + '"]').classList.add('active');
+  }
   
-  function rewireLoggingToElement(eleLocator, eleOverflowLocator, autoScroll) {
+  // функция переподключения консолек вывода
+  function rewireLoggingToElement(containerNode, enableConsole) {
     fixLoggingFunc('log');
     fixLoggingFunc('debug');
     fixLoggingFunc('warn');
@@ -86,21 +131,11 @@ const html = `
     function fixLoggingFunc(name) {
       console['old' + name] = console[name];
       console[name] = function(...arguments) {
-        const output = produceOutput(name, arguments);
-        const eleLog = eleLocator();
-  
-        if (autoScroll) {
-          const eleContainerLog = eleOverflowLocator();
-          const isScrolledToBottom = eleContainerLog.scrollHeight - eleContainerLog.clientHeight <= eleContainerLog.scrollTop + 1;
-          eleLog.innerHTML += output + '<br>';
-          if (isScrolledToBottom) {
-            eleContainerLog.scrollTop = eleContainerLog.scrollHeight - eleContainerLog.clientHeight;
-          }
-        } else {
-          eleLog.innerHTML += output + '<br>';
+        const output = produceOutput(name, arguments);        
+        containerNode.insertAdjacentHTML('afterbegin', '<div>' + output + '</div>');
+        if (enableConsole) {
+          console['old' + name].apply(undefined, arguments);
         }
-  
-        console['old' + name].apply(undefined, arguments);
       };
     }
   
@@ -123,37 +158,48 @@ const html = `
 
   window.addEventListener('message', (event) => {
     const [code, transpiled, error] = event.data.split('@*@');
-    
     if (error && error.length > 0) {
        return handleError(error);
     }
-
-    document.body.innerHTML = '<div id="root"></div>'
-      + '<div id="log-container"><pre id="log"></pre></div>'
-      + '<div id="transpiled-container><pre id="transpiled"></pre></div>';
-    
     // ловим асинхронные ошибки
     window.addEventListener('error', (event) => {
       event.preventDefault();
       handleError(event.error);
     });
-    
+    //document.getElementById('root').innerHTML = '';
     try {
       // безопасно выполняем eval, так как он в своей песочнице <iframe> без доступа на уровень выше
       eval(code);
       // отобразим транспиляцию в ES6 код
-      if (transpiled.length > 0) {
-        document.querySelector('#transpiled').innerHTML = transpiled;
-      }
+      document.querySelector('#transpiled').innerHTML = transpiled;
     } catch (err) {
-      // ловим синхронные ошибки
-      handleError(err);
+      handleError(err); // ловим синхронные ошибки
     }
   }, false);
+  
+  // слушаем переключение вкладок
+  document.addEventListener('click', e => {
+    if (e.target && e.target.classList.contains('tablinks')) {
+      openTab(e.target.dataset.tab);
+    }
+  });
+  
+  // по готовности DOM: дефолтная вкладка и прокрутки
+  document.addEventListener('DOMContentLoaded', e => {
+    openTab('root');
+    rewireLoggingToElement(document.getElementById('console'), true);
+  });
 </script>
 </head>
 <body>
-  
+  <div class="tab">
+    <button class="tablinks" data-tab="root">Preview</button>
+    <button class="tablinks" data-tab="console">Console</button>
+    <button class="tablinks" data-tab="transpiled">Transpiled ES6</button>
+  </div>
+  <div id="root" class="tabcontent"></div>
+  <pre id="console" class="tabcontent"></pre>
+  <pre id="transpiled" class="tabcontent"></pre>
 </body>
 </html>`;
 
