@@ -56,6 +56,8 @@ apps: [
   {
     name: '${appName}',
     script: '${shipit.releasePath}/server/dist/index.js',
+    instances: 1,
+    exec_mode: 'cluster',
     watch: false,
     autorestart: true,
     "max_memory_restart": "1000",
@@ -71,6 +73,15 @@ apps: [
   }
 ]
 };`;
+    // {
+    //   name: 'CRON',
+    //   script: "crons/cronjob.js",
+    //   instances: 1,
+    //   exec_mode: 'fork',
+    //   cron_restart: "0,30 * * * *",
+    //   watch: false,
+    //   autorestart: false
+    // }
     fs.writeFileSync('ecosystem.config.js', ecosystem, function(err) {
       if (err) throw err;
       console.log('=> File <ecosystem.config.js> created successfully.');
