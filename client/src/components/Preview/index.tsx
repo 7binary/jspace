@@ -47,12 +47,11 @@ const html = `
     font-size: 15px;
   }
   pre {
-    padding: 4px 8px;
     font-size: 13px;
-    white-space: pre-wrap;       /* css-3 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: pre-wrap;       
+    white-space: -moz-pre-wrap; 
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
   }
   
   /* error */
@@ -66,39 +65,49 @@ const html = `
   }
   
   /* tabs */
-  .tab {
+  .tablinks {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     overflow: hidden;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
   }
-  .tab button {
+  .tablinks button {
     background-color: inherit;
     float: left;
     border: none;
     outline: none;
     cursor: pointer;
-    padding: 14px 16px;
+    line-height: 26px;
+    padding: 0 10px;
     transition: 0.3s;
   }
-  /* Change background color of buttons on hover */
-  .tab button:hover {
+  .tablinks button:hover {
     background-color: #ddd;
   }
-  /* Create an active/current tablink class */
-  .tab button.active {
+  .tablinks button.active {
     background-color: #ccc;
-  }
-  
-  /* Style the tab content */
+  }  
   .tabcontent {
     display: none;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
+    padding: 6px 12px 34px;
     border-top: none;
   }
   
   /* console logger */
-  #console { overflow: auto; height: 150px; }
+  #console-counter {
+    background: white;
+    padding: 3px 7px;
+    border-radius: 50%;
+    font-size: 12px;
+    line-height: 12px;
+    border: 1px solid #999;
+    color: #666;
+    font-weight: bold;
+    display: none;
+  }
   .log-warn { color: orange }
   .log-error { color: red }
   .log-info { color: skyblue }
@@ -106,22 +115,25 @@ const html = `
   .log-warn, .log-error { font-weight: bold; }
 </style>
 <script>
+  let rootNode, consoleNode, consoleCounterNode, transpiledNode;
+  let getConsoleCounter, resetConsoleCounter;
   // установка переключения вкладки
   function openTab(tabName) {
+    const tablink = document.getElementsByClassName('tablink');
     const tabcontent = document.getElementsByClassName('tabcontent');
     for (let i = 0; i < tabcontent.length; i++) {
       tabcontent[i].style.display = 'none';
     }
-    const tablinks = document.getElementsByClassName('tablinks');
-    for (let i = 0; i < tablinks.length; i++) {
-      tablinks[i].classList.remove('active');
+    for (let i = 0; i < tablink.length; i++) {
+      tablink[i].classList.remove('active');
     }
     document.getElementById(tabName).style.display = "block";
-    document.querySelector('[data-tab="' + tabName + '"]').classList.add('active');
+    document.querySelector('.tablink[data-tab="' + tabName + '"]').classList.add('active');
   }
   
   // функция переподключения консолек вывода
-  function rewireLoggingToElement(containerNode, enableConsole) {
+  function rewireConsole(containerNode, enableConsoleOutput = true) {
+    let callCounter = 0;
     fixLoggingFunc('log');
     fixLoggingFunc('debug');
     fixLoggingFunc('warn');
@@ -132,20 +144,27 @@ const html = `
       console['old' + name] = console[name];
       console[name] = function(...arguments) {
         const output = produceOutput(name, arguments);        
-        containerNode.insertAdjacentHTML('afterbegin', '<div>' + output + '</div>');
-        if (enableConsole) {
+        containerNode.insertAdjacentHTML('beforeend', '<div>' + output + '</div>');
+        containerNode.scrollIntoView(false);
+        if (enableConsoleOutput) {
           console['old' + name].apply(undefined, arguments);
         }
       };
     }
   
     function produceOutput(name, args) {
+      callCounter++;
       return args.reduce((output, arg) => {
         return output +
           '<span class="log-' + (typeof arg) + ' log-' + name + '">' +
           (typeof arg === 'object' && (JSON || {}).stringify ? JSON.stringify(arg) : arg) +
           '</span>&nbsp;';
       }, '');
+    }
+    
+    return {
+      getCounter: () => callCounter,
+      resetCounter: () => { callCounter = 0 },
     }
   }
 
@@ -156,30 +175,41 @@ const html = `
     console.error(err); // пробрасываем ошибку в консольку для деталки по ошибке
   }
 
-  window.addEventListener('message', (event) => {
-    const [code, transpiled, error] = event.data.split('@*@');
-    if (error && error.length > 0) {
-       return handleError(error);
-    }
-    // ловим асинхронные ошибки
-    window.addEventListener('error', (event) => {
-      event.preventDefault();
-      handleError(event.error);
-    });
-    //document.getElementById('root').innerHTML = '';
-    try {
-      // безопасно выполняем eval, так как он в своей песочнице <iframe> без доступа на уровень выше
-      eval(code);
-      // отобразим транспиляцию в ES6 код
-      document.querySelector('#transpiled').innerHTML = transpiled;
-    } catch (err) {
-      handleError(err); // ловим синхронные ошибки
-    }
-  }, false);
+  function registerIframeListener() {
+    rootNode = document.querySelector('#root');
+    consoleNode = document.querySelector('#console');
+    consoleCounterNode = document.querySelector('#console-counter');
+    transpiledNode = document.querySelector('#transpiled'); 
+    
+    window.addEventListener('message', (event) => {
+      const [code, transpiled, error] = event.data.split('@*@');
+      if (error && error.length > 0) {
+         return handleError(error);
+      }
+      // ловим асинхронные ошибки
+      window.addEventListener('error', (event) => {
+        event.preventDefault();
+        handleError(event.error);
+      });
+      try {
+        // сбросы
+        resetConsoleCounter();
+        consoleNode.innerHTML = '';
+        transpiledNode.innerHTML = transpiled;
+        // безопасно выполняем eval, так как он в своей песочнице <iframe> без доступа на уровень выше
+        eval(code);
+        // обновляем счетчик консольных вызовов
+        consoleCounterNode.innerHTML = getConsoleCounter();
+        consoleCounterNode.style.display = 'inline-block';
+      } catch (err) {
+        handleError(err); // ловим синхронные ошибки
+      }
+    }, false);
+  }
   
   // слушаем переключение вкладок
   document.addEventListener('click', e => {
-    if (e.target && e.target.classList.contains('tablinks')) {
+    if (e.target && e.target.classList.contains('tablink')) {
       openTab(e.target.dataset.tab);
     }
   });
@@ -187,19 +217,24 @@ const html = `
   // по готовности DOM: дефолтная вкладка и прокрутки
   document.addEventListener('DOMContentLoaded', e => {
     openTab('root');
-    rewireLoggingToElement(document.getElementById('console'), true);
+    const {getCounter, resetCounter} = rewireConsole(document.getElementById('console'));
+    getConsoleCounter = getCounter;
+    resetConsoleCounter = resetCounter;
+    registerIframeListener();
   });
 </script>
 </head>
 <body>
-  <div class="tab">
-    <button class="tablinks" data-tab="root">Preview</button>
-    <button class="tablinks" data-tab="console">Console</button>
-    <button class="tablinks" data-tab="transpiled">Transpiled ES6</button>
+  <div class="tablinks">
+    <button class="tablink" data-tab="root">Preview</button>
+    <button class="tablink" data-tab="transpiled">Transpiled ES6</button>
+    <button class="tablink" data-tab="console">Console <span id="console-counter"></span></button>
   </div>
-  <div id="root" class="tabcontent"></div>
-  <pre id="console" class="tabcontent"></pre>
-  <pre id="transpiled" class="tabcontent"></pre>
+  <div class="tabcontents">
+    <div class="tabcontent" id="root"></div>
+    <pre class="tabcontent" id="transpiled"></pre>
+    <pre class="tabcontent" id="console"></pre>
+  </div>
 </body>
 </html>`;
 
