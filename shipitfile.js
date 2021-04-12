@@ -46,7 +46,7 @@ module.exports = shipit => {
 
   shipit.blTask('pm2-server', async () => {
     await shipit.remote(`pm2 delete -s ${appName} || :`);
-    await shipit.remote(`pm2 start ${ecosystemFilePath} --env production --watch true`);
+    await shipit.remote(`pm2 start ${ecosystemFilePath} --env production`);
   });
 
   shipit.blTask('copy-config', async () => {
@@ -60,9 +60,8 @@ apps: [
     exec_mode: 'cluster',
     watch: false,
     autorestart: true,
-    "max_memory_restart": "1000",
     "node_args": [
-       "--max_old_space_size=1024"
+       "--max_old_space_size=2048"
     ],
     env: {
       NODE_ENV: 'development'
@@ -75,7 +74,7 @@ apps: [
 };`;
     // {
     //   name: 'CRON',
-    //   script: "crons/cronjob.js",
+    //   script: "src/crons/cronjob.js",
     //   instances: 1,
     //   exec_mode: 'fork',
     //   cron_restart: "0,30 * * * *",
