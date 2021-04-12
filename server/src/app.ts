@@ -40,8 +40,8 @@ app.use(errorHandler);
 
 // client static. Builded (prod) or Proxied (dev)
 if (isProd) {
-  app.use(['/'], express.static(path.join(__dirname, '../../client/build')));
-  app.use(['/:uuid'], express.static(path.join(__dirname, '../../client/build')));
+  app.use(['/'], express.static(path.join(__dirname, '../../client/build'), { etag: false }));
+  app.use(['/:uuid'], express.static(path.join(__dirname, '../../client/build'), { etag: false }));
 } else {
   app.use(['/'], createProxyMiddleware({
     target: `http://localhost:${process.env.CLIENT_PORT}`,
@@ -52,7 +52,7 @@ if (isProd) {
 
 // error handlers
 app.all('*', async () => {
-  // throw new NotFoundError();
+  throw new NotFoundError();
 });
 
 export { app };
