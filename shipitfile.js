@@ -7,7 +7,7 @@ module.exports = shipit => {
   shipit.initConfig({
     default: {
       deployTo: `/home/webuser/${appName}`,
-      key: '/Users/artemzinovev/.ssh/id_rsa',
+      key: '~/.ssh/id_rsa',
       repositoryUrl: 'https://github.com/7binary/jspace.git',
       keepReleases: 2,
       shared: {
@@ -61,7 +61,7 @@ apps: [
     watch: false,
     autorestart: true,
     "node_args": [
-       "--max_old_space_size=2048"
+       "--max_old_space_size=1536"
     ],
     env: {
       NODE_ENV: 'development'
